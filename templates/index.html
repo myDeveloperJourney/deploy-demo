@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Demo — Deloitte × GA</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+            max-width: 760px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #1a1a1a;
+            line-height: 1.5;
+            background: #fafbfd;
+        }
+        h1 {
+            color: #0b3d91;
+            border-bottom: 3px solid #0b3d91;
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            color: #666;
+            margin: 0 0 24px;
+            font-size: 14px;
+        }
+        form {
+            background: #f5f8fc;
+            padding: 20px 24px;
+            border-radius: 6px;
+            border-left: 4px solid #0b3d91;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 12px 0 4px;
+            color: #0b3d91;
+            font-size: 14px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid #cfd6df;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background: white;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: 2px solid #0b3d91;
+            outline-offset: -1px;
+            border-color: #0b3d91;
+        }
+        button {
+            background: #0b3d91;
+            color: white;
+            padding: 10px 22px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        button:hover { background: #082c69; }
+        button:disabled { background: #999; cursor: wait; }
+        .result {
+            background: #fff7e0;
+            border-left: 4px solid #d4a017;
+            padding: 16px 20px;
+            margin-top: 24px;
+            border-radius: 4px;
+        }
+        .result-label {
+            color: #3b2c00;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .meta {
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            margin-left: 6px;
+        }
+        .examples {
+            background: #eef3fb;
+            padding: 14px 18px;
+            border-radius: 4px;
+            margin-top: 18px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .examples strong { color: #0b3d91; }
+        .examples em {
+            color: #0b3d91;
+            font-style: normal;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 60px;
+        }
+        pre {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 13px;
+            font-family: "Menlo", "Consolas", monospace;
+            border: 1px solid #e8d8a0;
+            margin: 0;
+        }
+        footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multi-Agent Workflow</h1>
+    <p class="subtitle">Deloitte × General Assembly &middot; Gen AI Frameworks &amp; Tools &middot; Day 5 Deployment Demo</p>
+
+    <form method="post" action="/query" onsubmit="document.getElementById('go').disabled=true; document.getElementById('go').textContent='Running…';">
+        <label for="question">Question</label>
+        <input type="text" name="question" id="question"
+               value="{{ question or '' }}" required
+               placeholder="e.g. What is 45 times 12?  /  How many customers in North America?">
+
+        <label for="task_type">Routing</label>
+        <select name="task_type" id="task_type">
+            <option value="auto" {% if task_type == 'auto' %}selected{% endif %}>Auto (workflow decides)</option>
+            <option value="math" {% if task_type == 'math' %}selected{% endif %}>Math agent</option>
+            <option value="sql"  {% if task_type == 'sql'  %}selected{% endif %}>SQL agent</option>
+            <option value="search" {% if task_type == 'search' %}selected{% endif %}>Search agent</option>
+        </select>
+
+        <button id="go" type="submit">Run query</button>
+    </form>
+
+    <div class="examples">
+        <strong>Example queries:</strong><br>
+        <em>Math:</em> What is the square root of 144, plus 5?<br>
+        <em>SQL:</em> List the top 3 customers by total order value<br>
+        <em>SQL:</em> How many customers are in the North America region?<br>
+        <em>Search:</em> What's the latest news on Claude AI?
+    </div>
+
+    {% if result %}
+    <div class="result">
+        <span class="result-label">Result <span class="meta">{{ elapsed }}</span></span>
+        <pre>{{ result }}</pre>
+    </div>
+    {% endif %}
+
+    <footer>
+        Running on Railway · ReAct traces stream to server logs · Built on LangChain + GPT-4o-mini
+    </footer>
+</body>
+</html>
