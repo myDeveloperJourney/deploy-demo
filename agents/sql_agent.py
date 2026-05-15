@@ -66,9 +66,16 @@ class SQLAgent:
         )
 
     def _execute(self, query: str) -> str:
+        # The ReAct agent often wraps its Action Input in quotes (e.g.
+        # 'SELECT ...'), and the LangChain parser doesn't always strip them.
+        # Peel off any matched pair of surrounding quotes before validating
+        # so a well-formed SELECT isn't rejected for a stray leading quote.
+        query = query.strip()
+        while len(query) >= 2 and query[0] == query[-1] and query[0] in "'\"`":
+            query = query[1:-1].strip()
         if UNSAFE_PATTERNS.search(query):
             return "Error: only SELECT queries are allowed. Statement rejected by guardrail."
-        if not query.strip().lower().lstrip("(").startswith("select"):
+        if not query.lower().lstrip("(").startswith("select"):
             return "Error: only SELECT queries are allowed."
         # Auto-LIMIT to keep responses bounded.
         if "limit" not in query.lower():
