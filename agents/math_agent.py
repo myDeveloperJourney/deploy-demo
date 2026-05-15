@@ -51,7 +51,7 @@ class MathAgent:
             agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
             verbose=True,
             handle_parsing_errors=True,
-            max_iterations=5,
+            max_iterations=25,
         )
 
     def run(self, question: str) -> str:

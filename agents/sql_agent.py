@@ -62,7 +62,7 @@ class SQLAgent:
             agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
             verbose=True,
             handle_parsing_errors=True,
-            max_iterations=6,
+            max_iterations=25,
         )
 
     def _execute(self, query: str) -> str:
