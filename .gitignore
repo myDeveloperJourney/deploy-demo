@@ -11,3 +11,4 @@ data/sample.db
 *.log
 .idea/
 .vscode/
+*.db-journal
